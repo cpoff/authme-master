@@ -152,7 +152,7 @@ router.post('/login', function(request, response) {
         response.render('index', {
           title: 'Authorize Me!',
           user: null,
-          error: "Wrong pwd, you dope."
+          error: "<sad trombone> Wrong pwd, you dope."
         });
       }
     }
