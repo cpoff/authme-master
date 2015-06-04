@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var app = require('../app')
+var knexConfig = require('../knexfile.js');
+var knex = require('knex')(knexConfig);
 
 /*
 This is a request handler for loading the main page. It will check to see if
@@ -21,7 +23,7 @@ router.get('/', function(request, response, next) {
   render the index page. The username variable will be either null
   or a string indicating the username.
   */
-  response.render('index', { title: 'Engage!', username: username });
+  response.render('index', { title: 'Authorize Me!', username: username });
 });
 
 /*
@@ -59,9 +61,7 @@ router.post('/register', function(request, response) {
     This will insert a new record into the users table. The insert
     function takes an object whose keys are column names and whose values
     are the contents of the record.
-    ---------------------
-    ADD DUPLICATE AVOIDANCE
-    ---------------------
+
     This uses a "promise" interface. It's similar to the callbacks we've
     worked with before. insert({}).then(function() {...}) is very similar
     to insert({}, function() {...});
@@ -90,7 +90,7 @@ router.post('/register', function(request, response) {
     response.render('index', {
       title: 'Authorize Me!',
       user: null,
-      error: "Password didn't match confirmation"
+      error: "Wrong pwd, dope."
     });
   }
 });
@@ -152,7 +152,7 @@ router.post('/login', function(request, response) {
         response.render('index', {
           title: 'Authorize Me!',
           user: null,
-          error: "<sad trombone> Wrong pwd, you dope."
+          error: "Password incorrect"
         });
       }
     }
