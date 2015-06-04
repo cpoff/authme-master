@@ -21,7 +21,7 @@ router.get('/', function(request, response, next) {
   render the index page. The username variable will be either null
   or a string indicating the username.
   */
-  response.render('index', { title: 'Do it!', username: username });
+  response.render('index', { title: 'Engage!', username: username });
 });
 
 /*
