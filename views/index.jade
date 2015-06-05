@@ -9,13 +9,14 @@ block content
       form(method="post" action="/sendtweet")
         div
           label Tweet:  
-            input(type="text" name="tweet" placeholder=" Let's do this")
+            input(type="text" name="tweet" placeholder=" What?")
+            input(type="submit" value="Engage")
     p Previous tweets.
         each twit in tweets
           div
             span= twit.username
             span= twit.twit
-            span= twit.dateTime
+            //- span= twit.dateTime
 
   else
     p You are not logged in. Would you like to be?
