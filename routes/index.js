@@ -117,12 +117,11 @@ router.post('/login', function(request, response) {
             }
         });
 });
-
 router.post('/sendtweet', function(request, response) {
     var tweet = request.body.tweet,
         tweeter = request.cookies.username,
         database = app.get('database');
-        database('tweets')
+    database('tweets')
         .insert({
             twit: tweet,
             username: tweeter,
@@ -132,4 +131,6 @@ router.post('/sendtweet', function(request, response) {
             response.redirect('/');
         });
 });
+
 module.exports = router;
+
