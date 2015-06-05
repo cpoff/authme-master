@@ -5,16 +5,39 @@ var knexConfig = require('../knexfile.js');
 var knex = require('knex')(knexConfig);
 router.get('/', function(request, response, next) {
     var username;
-    if (request.cookies.username) {
+    if (request.cookies.username != undefined) {
         username = request.cookies.username;
+        database = app.get('database');
+        database('tweets')
+            .select()
+            .then(function(retreivePosts) {
+                retreivePosts.sort(function(a, b) {
+                    if (a.post_number > b.post_number) {
+                        return -1;
+                    }
+                    if (a.post_number < b.post_number) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                })
+                response.render('index', {
+                    username: username,
+                    tweets: retreivePosts
+                });
+            })
     }
     else {
         username = null;
+        response.render('index', {
+            title: "Let's do this",
+            username: username
+                // Tweets: tweets
+        });
     }
-    response.render('index', {
-        title: "Let's do this",
-        username: username
-    });
+    // --------------------
+    // --------------------
 });
 router.post('/register', function(request, response) {
     var username = request.body.username,
@@ -92,6 +115,21 @@ router.post('/login', function(request, response) {
                     });
                 }
             }
+        });
+});
+
+router.post('/sendtweet', function(request, response) {
+    var tweet = request.body.tweet,
+        tweeter = request.cookies.username,
+        database = app.get('database');
+        database('tweets')
+        .insert({
+            twit: tweet,
+            username: tweeter,
+            dateTime: new Date(Date.now())
+        })
+        .then(function() {
+            response.redirect('/');
         });
 });
 module.exports = router;
