@@ -5,10 +5,20 @@ block content
   if error
     h3= error
   if username
-    p Hi #{ username }. Everyone knows you wake up in the morning and piss excellence.
+    p #{ username } wakes up in the morning and pisses excellence.
+      form(method="post" action="/sendtweet")
+        div
+          label Tweet:  
+            input(type="text" name="tweet" placeholder=" Let's do this")
+ 
+
+
+
+
+
+
   else
     p You are not logged in. Would you like to be?
-    div
       form(method="post" action="/register")
         h2 Register a new account
         div
@@ -33,3 +43,9 @@ block content
             input(type="password" name="password")
         div
           input(type="submit" value="Let me in!")
+
+          div#tweets
+            Each tweet
+
+
+
