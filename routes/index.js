@@ -3,6 +3,9 @@ var router = express.Router();
 var app = require('../app')
 var knexConfig = require('../knexfile.js');
 var knex = require('knex')(knexConfig);
+    // --------------------
+    // BUILD INDEX PAGE
+    // --------------------
 router.get('/', function(request, response, next) {
     var username;
     if (request.cookies.username != undefined) {
@@ -36,9 +39,10 @@ router.get('/', function(request, response, next) {
                 // Tweets: tweets
         });
     }
-    // --------------------
-    // --------------------
 });
+    // --------------------
+    // REGISTER
+    // --------------------
 router.post('/register', function(request, response) {
     var username = request.body.username,
         password = request.body.password,
@@ -85,6 +89,9 @@ router.post('/register', function(request, response) {
             }
         })
 });
+    // --------------------
+    // LOGIN
+    // --------------------
 router.post('/login', function(request, response) {
     var username = request.body.username,
         password = request.body.password,
@@ -117,6 +124,9 @@ router.post('/login', function(request, response) {
             }
         });
 });
+    // --------------------
+    // SEND TWEETS
+    // --------------------
 router.post('/sendtweet', function(request, response) {
     var tweet = request.body.tweet,
         tweeter = request.cookies.username,

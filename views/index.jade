@@ -11,12 +11,12 @@ block content
           label Tweet:  
             input(type="text" name="tweet" placeholder=" What?")
             input(type="submit" value="Engage")
-    p Previous tweets.
+    p <b>In case you missed it:</b>
         each twit in tweets
           div
-            span= twit.username
-            span= twit.twit
-            //- span= twit.dateTime
+            span.user= twit.username
+            span.tweet= twit.twit
+            span.date= twit.dateTime
 
   else
     p You are not logged in. Would you like to be?
