@@ -3,18 +3,45 @@ var router = express.Router();
 var app = require('../app')
 var knexConfig = require('../knexfile.js');
 var knex = require('knex')(knexConfig);
-    // --------------------
-    // BUILD INDEX PAGE
-    // --------------------
+var redis = require("redis"),
+    cache = redis.createClient();
+
+cache.del('tweets');
+
+// --------------------
+// BUILD INDEX PAGE
+// --------------------
 router.get('/', function(request, response, next) {
     var username;
     if (request.cookies.username != undefined) {
         username = request.cookies.username;
         database = app.get('database');
-        database('tweets')
-            .select()
-            .then(function(retreivePosts) {
+        database('tweets').select().then(function(retreivePosts) {
+            // -----------------------
+            // BEGIN REDIS INSTALL
+            // -----------------------
+            cache.lpush('tweets', JSON.stringify({name: 'username', twit:'tweet', date: 'dateTime'}));
+
+            cache.lrange('tweets', 0, -1, function(err, results) {
+                results.forEach(function(it) {
+                    it = JSON.parse(it);
+                console.log("You're in the loop");
+                console.log(results[0]);
+                                })
+
+                  if (results.length < 1) {
+                    console.log("You're now in the db");
+                       knex('tweets').select().then(function(results) {
+                        console.log('Writing tweets to cache');
+                            
+                            response.render('index', {
+                                tweets: results
+                            });
+                        })
+                    }
+            });
                 retreivePosts.sort(function(a, b) {
+                    console.log("Welcome to the sort.");
                     if (a.post_number > b.post_number) {
                         return -1;
                     }
@@ -36,13 +63,12 @@ router.get('/', function(request, response, next) {
         response.render('index', {
             title: "Let's do this",
             username: username
-                // Tweets: tweets
         });
     }
 });
-    // --------------------
-    // REGISTER
-    // --------------------
+// --------------------
+// REGISTER
+// --------------------
 router.post('/register', function(request, response) {
     var username = request.body.username,
         password = request.body.password,
@@ -65,7 +91,6 @@ router.post('/register', function(request, response) {
                     user: null,
                     error: "Please fill out the form completely"
                 });
-                console.log('Incomplete');
                 return;
             }
             if (password === password_confirm) {
@@ -85,13 +110,12 @@ router.post('/register', function(request, response) {
                 response.render('index', {
                     error: "Bad pwd, fool."
                 })
-                console.log('Nope');
             }
         })
 });
-    // --------------------
-    // LOGIN
-    // --------------------
+// --------------------
+// LOGIN
+// --------------------
 router.post('/login', function(request, response) {
     var username = request.body.username,
         password = request.body.password,
@@ -124,9 +148,9 @@ router.post('/login', function(request, response) {
             }
         });
 });
-    // --------------------
-    // SEND TWEETS
-    // --------------------
+// --------------------
+// SEND TWEETS
+// --------------------
 router.post('/sendtweet', function(request, response) {
     var tweet = request.body.tweet,
         tweeter = request.cookies.username,
@@ -141,6 +165,4 @@ router.post('/sendtweet', function(request, response) {
             response.redirect('/');
         });
 });
-
 module.exports = router;
-
