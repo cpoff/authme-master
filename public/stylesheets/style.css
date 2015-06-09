@@ -4,6 +4,27 @@ body {
   border: 1px;
 }
 
+.tweetBody {
+	border: 1px solid black;
+	border-radius: 10px;
+	margin: 5px;
+	padding: 3px;
+	background-color: white;
+}
+
+.topContainer {
+	margin: 5px;
+	padding: 3px;
+	background-color: #E8D7B3;
+}
+
+.tweetContainer {
+	background-color: #D6D0E8;
+	border-radius: 8px;
+	padding: 5px;
+
+}
+
 .user {
   color: blue;
 }
@@ -16,3 +37,4 @@ body {
   padding: 5px;
   font: 10px "Courier", Helvetica, Arial, sans-serif;
 }
+
