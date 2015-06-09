@@ -7,40 +7,8 @@ var uuid = require('node-uuid');
 var nodemailer = require('nodemailer');
 var nonce = uuid.v4();
 console.log(nonce);
-
 usersToAdd = [];
-// --------------------
-// BUILD INDEX PAGE
-// --------------------
-router.get('/', function(request, response, next) {
-    var username;
-    if (request.cookies.username != undefined) {
-        username = request.cookies.username;
-        database = app.get('database');
-        database('tweets').select().then(function(retreivePosts) {
-            retreivePosts.sort(function(a, b) {
-                if (a.post_number > b.post_number) {
-                    return -1;
-                }
-                if (a.post_number < b.post_number) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            })
-            response.render('index', {
-                username: username,
-                tweets: retreivePosts
-            });
-        })
-    } else {
-        username = null;
-        response.render('index', {
-            title: "Let's do this",
-            username: username
-        });
-    }
-});
+
 // --------------------
 // REGISTER
 // --------------------
@@ -69,7 +37,12 @@ router.post('/register', function(request, response) {
         }
         if (password === password_confirm) {
             response.render('pending'),
-            usersToAdd.push({nonce:nonce, username:username, password:password, email:email});
+                usersToAdd.push({
+                    nonce: nonce,
+                    username: username,
+                    password: password,
+                    email: email
+                });
         } else {
             response.render('index', {
                 user: null,
@@ -105,7 +78,6 @@ router.post('/register', function(request, response) {
         }
     });
 });
-
 // --------------------
 // VERIFICATION
 // --------------------
@@ -120,16 +92,45 @@ router.get('/verify_email/:nonce', function(request, response) {
                 username: user.username,
                 password: user.password
             }).then(function() {
-                response.cookie('username',
-                    user.username)
+                response.cookie('username', user.username)
                 response.redirect('/');
             })
         }
     })
 });
-
-// add new route for validate user (GET)
-// router.get('/verify_email/:nonce', function(request, response) {
+// --------------------
+// BUILD INDEX PAGE
+// --------------------
+router.get('/', function(request, response, next) {
+    var username;
+    if (request.cookies.username != undefined) {
+        username = request.cookies.username;
+        database = app.get('database');
+        database('tweets').select().then(function(retreivePosts) {
+            // retreivePosts.reverse
+            retreivePosts.sort(function(a, b) {
+                if (a.post_number > b.post_number) {
+                    return -1;
+                }
+                if (a.post_number < b.post_number) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            })
+            response.render('index', {
+                username: username,
+                tweets: retreivePosts
+            });
+        })
+    } else {
+        username = null;
+        response.render('index', {
+            title: "Let's do this",
+            username: username
+        });
+    }
+});
 // --------------------
 // LOGIN
 // --------------------
