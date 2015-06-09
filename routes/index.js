@@ -6,9 +6,9 @@ var knex = require('knex')(knexConfig);
 var uuid = require('node-uuid');
 var nodemailer = require('nodemailer');
 var nonce = uuid.v4();
+console.log(nonce);
 
 usersToAdd = [];
-console.log(nonce);
 // --------------------
 // BUILD INDEX PAGE
 // --------------------
@@ -19,10 +19,10 @@ router.get('/', function(request, response, next) {
         database = app.get('database');
         database('tweets').select().then(function(retreivePosts) {
             retreivePosts.sort(function(a, b) {
-                if (a.post_number < b.post_number) {
+                if (a.post_number > b.post_number) {
                     return -1;
                 }
-                if (a.post_number > b.post_number) {
+                if (a.post_number < b.post_number) {
                     return 1;
                 } else {
                     return 0;
@@ -54,7 +54,7 @@ router.post('/register', function(request, response) {
         'username': username
     }).then(function(records) {
         if (records.length > 0) {
-            response.render('index', {
+            response.render('pending', {
                 user: null,
                 error: "Please complete all the fields."
             })
@@ -65,7 +65,6 @@ router.post('/register', function(request, response) {
                 user: null,
                 error: "Please fill out the form completely"
             });
-            console.log('Incomplete');
             return;
         }
         if (password === password_confirm) {
