@@ -54,15 +54,15 @@ router.post('/register', function(request, response) {
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
-            user: 'curt.poff@gmail.com',
-            pass: 'f@tback2069'
+            user: 'XXX',
+            pass: 'XXX'
         }
     });
     // NB! No need to recreate the transporter object. You can use 
     // the same transporter object for all e-mails 
     // setup e-mail data with unicode symbols 
     var mailOptions = {
-        from: 'Curt Poff ✔ <curt.poff@gmail.com>', // sender address 
+        from: 'Curt Poff ✔ <XXX>', // sender address 
         to: email, // list of receivers 
         subject: 'Hello ✔', // Subject line 
         text: 'Get some ✔', // plaintext body 
