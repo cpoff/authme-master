@@ -3,6 +3,8 @@ var router = express.Router();
 var app = require('../app')
 var knexConfig = require('../knexfile.js');
 var knex = require('knex')(knexConfig);
+var pwd = require('pwd');
+
 router.get('/', function(request, response, next) {
     var username;
     if (request.cookies.username != undefined) {
@@ -36,14 +38,17 @@ router.get('/', function(request, response, next) {
                 // Tweets: tweets
         });
     }
-    // --------------------
-    // --------------------
 });
+
+    // --------------------
+//        REGISTRATION
+    // --------------------
+ // The user's registration info:  
 router.post('/register', function(request, response) {
     var username = request.body.username,
         password = request.body.password,
-        password_confirm = request.body.password_confirm,
-        database = app.get('database');
+        password_confirm = request.body.password_confirm,      
+    database = app.get('database');
     database('users')
         .where({
             'username': username
@@ -65,17 +70,27 @@ router.post('/register', function(request, response) {
                 return;
             }
             if (password === password_confirm) {
-                console.log('Yes!');
+                var raw = {name:username, password:password};
+                var stored = {name:'username', salt:'', hash:''}; 
+                function register(raw) {
+                    pwd.hash(raw.password, function(err,salt,hash) {
+                        stored = {name:raw.name, salt:salt, hash:hash};
+                        console.log(stored);
+                    });
                 database('users')
                     .insert({
+//                    hash/salt
                         username: username,
                         password: password,
                     })
                     .then(function() {
                         response.cookie('username', username)
                         response.redirect('/');
-                    });
+                    })
                 return;
+                
+                    }
+                register(raw);
             }
             else {
                 response.render('index', {
@@ -111,7 +126,7 @@ router.post('/login', function(request, response) {
                     response.render('index', {
                         title: 'ERROR!',
                         user: null,
-                        error: "Learn how to type, you jackass!"
+                        error: "Learn how to type, jackass!"
                     });
                 }
             }
