@@ -71,28 +71,27 @@ router.post('/register', function(request, response) {
                 salt: '',
                 hash: ''
             };
-
-            function register(raw) {
-                pwd.hash(raw.password, function(err, salt, hash) {
-                    stored = {
-                        name: raw.name,
-                        salt: salt,
-                        hash: hash
-                    };
-                    console.log(stored);
-                    database('users').insert({
-//                      HASH/SALT INSERT TO DB HERE
-                        username: stored.name,
-                        salt: stored.salt,
-                        hash: stored.hash
-                    }).then(function() {
-                        response.cookie('username', username)
-                        response.redirect('/');
-                    })
-                    return;
-                });
-            }
-            register(raw);
+            //            function register(raw) {
+            pwd.hash(raw.password, function(err, salt, hash) {
+                stored = {
+                    name: raw.name,
+                    salt: salt,
+                    hash: hash
+                };
+                console.log(stored);
+                database('users').insert({
+                    //HASH/SALT INSERT TO DB HERE
+                    username: stored.name,
+                    salt: stored.salt,
+                    hash: stored.hash
+                }).then(function() {
+                    response.cookie('username', username)
+                    response.redirect('/');
+                })
+                return;
+            });
+            //            }
+            //            register(raw);
         } else {
             response.render('index', {
                 error: "Bad pwd, fool."
@@ -101,6 +100,7 @@ router.post('/register', function(request, response) {
         }
     })
 });
+
 router.post('/login', function(request, response) {
     var username = request.body.username,
         password = request.body.password,
@@ -116,19 +116,18 @@ router.post('/login', function(request, response) {
             });
         } else {
             var user = records[0];
-            if (user.password === password) {
-                response.cookie('username', username);
-                response.redirect('/');
-            } else {
-                response.render('index', {
-                    title: 'ERROR!',
-                    user: null,
-                    error: "Learn how to type, jackass!"
-                });
-            }
-        }
-    });
+            //                function authenticate(attempt) {
+            pwd.hash(password, user.salt, function(err, hash) {
+                if (hash === user.hash) {
+                    console.log('Success!')
+                    response.cookie('username', username);
+                    response.redirect('/');
+                }
+            })
+        };
+    })
 });
+
 router.post('/sendtweet', function(request, response) {
     var tweet = request.body.tweet,
         tweeter = request.cookies.username,
