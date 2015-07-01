@@ -37,7 +37,7 @@ router.get('/', function(request, response, next) {
             username: username
                 // Tweets: tweets
         });
-    }
+    };
 });
 
     // --------------------
