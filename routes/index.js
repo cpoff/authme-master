@@ -4,7 +4,6 @@ var app = require('../app')
 var knexConfig = require('../knexfile.js');
 var knex = require('knex')(knexConfig);
 var pwd = require('pwd');
-
 router.get('/', function(request, response, next) {
     var username;
     if (request.cookies.username != undefined) {
@@ -35,7 +34,6 @@ router.get('/', function(request, response, next) {
         });
     };
 });
-
 //        --------------------
 //        REGISTRATION
 //        --------------------
@@ -64,8 +62,16 @@ router.post('/register', function(request, response) {
             return;
         }
         if (password === password_confirm) {
-            var raw = {name: username, password: password};
-            var stored = {name: 'username', salt: '', hash: ''};
+            var raw = {
+                name: username,
+                password: password
+            };
+            var stored = {
+                name: 'username',
+                salt: '',
+                hash: ''
+            };
+
             function register(raw) {
                 pwd.hash(raw.password, function(err, salt, hash) {
                     stored = {
@@ -74,16 +80,17 @@ router.post('/register', function(request, response) {
                         hash: hash
                     };
                     console.log(stored);
+                    database('users').insert({
+//                      HASH/SALT INSERT TO DB HERE
+                        username: stored.name,
+                        salt: stored.salt,
+                        hash: stored.hash
+                    }).then(function() {
+                        response.cookie('username', username)
+                        response.redirect('/');
+                    })
+                    return;
                 });
-                database('users').insert({
-//                  HASH/SALT GOES HERE
-                    username: username,
-                    password: password,
-                }).then(function() {
-                    response.cookie('username', username)
-                    response.redirect('/');
-                })
-                return;
             }
             register(raw);
         } else {
@@ -134,5 +141,4 @@ router.post('/sendtweet', function(request, response) {
         response.redirect('/');
     });
 });
-
 module.exports = router;
