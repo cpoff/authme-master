@@ -36,6 +36,7 @@ router.get('/', function(request, response, next) {
     };
 });
 
+
 //        --------------------
 //        REGISTRATION
 //        --------------------
