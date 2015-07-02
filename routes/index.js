@@ -4,6 +4,7 @@ var app = require('../app')
 var knexConfig = require('../knexfile.js');
 var knex = require('knex')(knexConfig);
 var pwd = require('pwd');
+
 router.get('/', function(request, response, next) {
     var username;
     if (request.cookies.username != undefined) {
@@ -34,10 +35,10 @@ router.get('/', function(request, response, next) {
         });
     };
 });
+
 //        --------------------
 //        REGISTRATION
 //        --------------------
-//        The user's registration info:  
 router.post('/register', function(request, response) {
     var username = request.body.username,
         password = request.body.password,
@@ -80,7 +81,7 @@ router.post('/register', function(request, response) {
                 };
                 console.log(stored);
                 database('users').insert({
-                    //HASH/SALT INSERT TO DB HERE
+                    //HASH AND SALT INPUT 
                     username: stored.name,
                     salt: stored.salt,
                     hash: stored.hash
@@ -101,6 +102,9 @@ router.post('/register', function(request, response) {
     })
 });
 
+//        --------------------
+//        LOGIN AND AUTHENTICATION
+//        --------------------
 router.post('/login', function(request, response) {
     var username = request.body.username,
         password = request.body.password,
@@ -116,7 +120,7 @@ router.post('/login', function(request, response) {
             });
         } else {
             var user = records[0];
-            //                function authenticate(attempt) {
+            //function authenticate(attempt) {
             pwd.hash(password, user.salt, function(err, hash) {
                 if (hash === user.hash) {
                     console.log('Success!')
@@ -128,6 +132,9 @@ router.post('/login', function(request, response) {
     })
 });
 
+//        --------------------
+//        POST TWEET
+//        --------------------
 router.post('/sendtweet', function(request, response) {
     var tweet = request.body.tweet,
         tweeter = request.cookies.username,
