@@ -17,16 +17,16 @@
     "redis": "^0.12.1",
     "serve-favicon": "~2.2.0"
   },
-  "description": "A site you can log into and out of",
+  "description": "A Twitter clone with authorization, hash/salt, e-mail verification.",
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/portlandcodeschool-jsi/authme.git"
+    "url": "https://github.com/cpoff/authme-master.git"
   },
-  "author": "Erin Call",
+  "author": "Curt Poff",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/portlandcodeschool-jsi/authme/issues"
+    "url": "https://github.com/cpoff/authme-master"
   },
-  "homepage": "https://github.com/portlandcodeschool-jsi/authme"
+  "homepage": "https://github.com/cpoff/authme-master"
 }
