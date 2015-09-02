@@ -1,2 +1,2 @@
 # authme
-A site you can log into and out of
+A Twitter clone client that contains authentication, history/persistence, live update using web sockets.
